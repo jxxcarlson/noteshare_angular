@@ -21,29 +21,46 @@
             })
 
             // route for the contact page
-            .when('/contact', {
-                templateUrl : 'pages/contact.html',
-                controller  : 'contactController'
+            .when('/documents', {
+                templateUrl : 'pages/documents.html',
+                controller  : 'documentsController'
             });
     });
 
     // create the controller and inject Angular's $scope
-    noteshareApp.controller('mainController', function($scope) {
-        // create a message to display in our view
-        $scope.message = 'Everyone come and see how good I look!';
+    noteshareApp.controller('mainController', function($scope, $http) {
+      $http.get('http://localhost:2300/v1/documents/1')
+      .then(function(response){
+        console.log(String(response.data))
+        $scope.text = response.data['document']['text']
+      });
     });
 
     noteshareApp.controller('aboutController', function($scope) {
         $scope.message = 'Look! I am an about page.';
     });
 
-    noteshareApp.controller('contactController', function($scope) {
-        $scope.message = 'Contact us! JK. This is just a demo.';
+    noteshareApp.controller('documentsController', function($scope, $http) {
+      $http.get('http://localhost:2300/v1/documents/1')
+      .then(function(response){
+        console.log(String(response.data))
+        $scope.text = response.data['document']['text']
+      });
     });
 
-    noteshareApp.controller('documentController', function readDocument($scope, $http) {
+    noteshareApp.controller('signinController', [
+      '$scope',
+      function($scope) {
+        $scope.submit = function() { console.log('Sign in page: submit'); }
+      }
+    ]);
+
+
+/**
+    noteshareApp.controller('documentController', function($scope, $http) {
       $http.get('http://localhost:2300/documents/12')
       .then(function(response){
         $scope.text = response.data
       });
     });
+*/

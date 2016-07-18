@@ -1,11 +1,22 @@
 <!-- home.html -->
-    <div class="jumbotron text-center">
-        <h1>Home Page</h1>
+<div class="jumbotron text-center">
 
-        <p>{{ message }}</p>
+    <h1>Sign in to Noteshare</h1>
 
-        <div ng-controller="readDocument">
-			    <p>Document text: {{text}}</p>
-		   </div>
+  <br/>
+  <!-- https://docs.angularjs.org/api/ng/directive/ngSubmit -->
 
-    </div>
+  <div ng-app="noteshareApp" ng-controller="signinController">
+      <form ng-submit="submit()">
+        User name: <input type="text" ng-model="username">
+        <br/><br/>
+        Password: <input type="text" ng-model="password">
+        <br/><br/>
+        <input type="submit" id="submit" value="Sign in" />
+      </form>
+
+
+  </div>
+
+
+</div>
