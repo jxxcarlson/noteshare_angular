@@ -1,24 +1,31 @@
 <!-- home.html -->
-<div class="jumbotron text-center">
+<div class="jumbotron">
 
-    <h1>Sign in to Noteshare</h1>
 
-  <br/>
   <!-- https://docs.angularjs.org/api/ng/directive/ngSubmit -->
 
-  <div ng-app="noteshareApp" ng-controller="signinController">
-      <form ng-submit="submit()"">
-        User name: <input type="text" ng-model="username">
-        <br/><br/>
-        Password: <input type="text" ng-model="password">
-        <br/><br/>
-        <input type="submit" id="submit" value="Sign in" />
+  <div ng-app="noteshareApp" ng-controller="signinController" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
+      <form ng-submit="submit()">
+
+        <h1>Sign in</h1>
+
+        <div class="form-group">
+          <label for="username">User name</label>
+          <input type="text" class="form-control" id="username" ng-model="username">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="text" class="form-control" id="password" ng-model="password">
+        </div>
+
+        <input type="submit" id="submit" value="Sign in" class="btn btn-default" />
       </form>
 
       {{ message }}
 
-      <br/>
-      <a href="#signup"><i class="fa fa-signup"></i>Need a new account?</a>
+      <br/><br/>
+      <a href="#signup"><i class="fa fa-signup"></i>Need an account?</a>
   </div>
 
 
