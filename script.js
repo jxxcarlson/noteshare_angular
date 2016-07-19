@@ -24,6 +24,11 @@
             .when('/documents', {
                 templateUrl : 'pages/documents.html',
                 controller  : 'documentsController'
+            })
+
+            .when('/signup', {
+                templateUrl : 'pages/signup.html',
+                controller  : 'signupController'
             });
     });
 
@@ -50,11 +55,31 @@
 
     noteshareApp.controller('signinController', [
       '$scope',
-      function($scope) {
-        $scope.submit = function() { console.log('Sign in page: submit'); }
+      '$http',
+      function($scope, $http) {
+        $scope.submit = function() {
+          console.log('Submit username = ' + $scope.username + ', password = ' + $scope.password);
+
+          $http.get('http://localhost:2300/v1/users/' + $scope.username + '?' + $scope.password)
+          .then(function(response){
+            if (response.data['status'] == 200) {
+              $scope.message = 'Success!'
+              $scope.token = response.data['token']
+            } else {
+              $scope.message = 'Sorry!'
+            }
+            console.log(String(response.data['token']))
+            $scope.text = $scope.token
+          });
+
+
+        }
       }
     ]);
 
+
+    noteshareApp.controller('signupController', function($scope) {
+    });
 
 /**
     noteshareApp.controller('documentController', function($scope, $http) {
