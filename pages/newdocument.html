@@ -1,0 +1,19 @@
+<!-- newdocuemnt.html -->
+    <div class="jumbotron">
+
+
+        <div ng-app="noteshareApp" ng-controller="newDocumentController" style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
+            <form ng-submit="submit()">
+
+              <h1>New document</h1>
+
+              <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" ng-model="title">
+              </div>
+
+              <input type="submit" id="submit" value="Create" class="btn btn-default" />
+            </form>
+
+        </div>
+    </div>
