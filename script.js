@@ -4,6 +4,30 @@
         // also include ngRoute for all our routing needs
     var noteshareApp = angular.module('noteshareApp', ['ngRoute']);
 
+    /*
+This directive allows us to pass a function in on an enter key to do what we want.
+http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/
+
+That’s it.  Now just add ng-enter="myFunction()" to any element in your partial
+that detects keystrokes. This has helped me a ton and added a lot of easy
+functionality to an already great AngularJS system.  If you have any other
+great directives or AngularJS tips please leave them below in the comments.
+ */
+ angular.module('noteshareApp').directive('ngEnter', function() {
+    return function(scope, element, attrs) {
+        element.bind("keydown keypress", function(event) {
+            if(event.which === 13) {
+                scope.$apply(function(){
+                    scope.$eval(attrs.ngEnter, {'event': event});
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
+});
+
+
     // configure our routes
     noteshareApp.config(function($routeProvider) {
         $routeProvider
@@ -39,12 +63,18 @@
 
     // create the controller and inject Angular's $scope
     noteshareApp.controller('mainController', function($scope, $http) {
-      $http.get('http://localhost:2300/v1/documents/1')
-      .then(function(response){
-        console.log(String(response.data))
-        $scope.text = response.data['document']['text']
-      });
+
     });
+
+
+
+
+    noteshareApp.controller('searchController', function($scope) {
+      $scope.doSearch = function(){
+            console.log('Search text: ' + $scope.searchText);
+      };
+    });
+
 
     noteshareApp.controller('aboutController', function($scope) {
         $scope.message = 'Look! I am an about page.';
