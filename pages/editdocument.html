@@ -2,8 +2,8 @@
   <div class="col-md-4" >
     <div style="margin-left:1em;">
 
-    <h2>Documents</h2>
-    <p ng-repeat="doc in docArray"><a href="#{{doc['url']}}">{{doc['title']}}</a></p>
+    <h2>Documents (edit)</h2>
+    <p ng-repeat="doc in docArray"><a href="#/editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
 
   </div>
   </div>
@@ -11,7 +11,8 @@
   <div class="col-md-8">
     <div style="margin-left:1em;">
     <h2> {{ title }} </h2>
-    <p> {{ text }} </p>
+    
+   <textarea ng-model="editText" style="height:90%"></textarea>
   </div>
 </div>
 

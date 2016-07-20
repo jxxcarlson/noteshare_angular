@@ -44,6 +44,12 @@ great directives or AngularJS tips please leave them below in the comments.
                 controller  : 'aboutController'
             })
 
+
+            .when('/newdocument', {
+                templateUrl : 'pages/newdocument.html',
+                controller  : 'newDocumentController'
+            })
+
             // route for the contact page
             .when('/documents', {
                 templateUrl : 'pages/documents.html',
@@ -55,9 +61,15 @@ great directives or AngularJS tips please leave them below in the comments.
                 controller  : 'documentsController'
             })
 
-            .when('/newdocument', {
-                templateUrl : 'pages/newdocument.html',
-                controller  : 'newDocumentController'
+
+            .when('/editdocument', {
+                templateUrl : 'pages/editdocument.html',
+                controller  : 'editDocumentController'
+            })
+
+            .when('/editdocument/:id', {
+                templateUrl : 'pages/editdocument.html',
+                controller  : 'editDocumentController'
             })
 
             .when('/signup', {
@@ -95,24 +107,7 @@ great directives or AngularJS tips please leave them below in the comments.
         $scope.message = 'Look! I am an about page.';
     });
 
-    /* REFERENCE: https://github.com/gsklee/ngStorage */
-    noteshareApp.controller('documentsController', [
-      '$scope',
-      '$localStorage',
-      '$routeParams',
-      '$http',
-      function($scope, $localStorage, $routeParams, $http) {
-        var id = $routeParams.id
-        console.log('Document id: ' + id)
-        /* $scope.documents = [{'title': 'Foo'}, {'title': 'Bar'}] */
-        var docArray = $localStorage.documents
-        $scope.docArray = docArray
-        $http.get('http://localhost:2300/v1/documents/' + id  )
-        .then(function(response){
-          $scope.text = response.data['document']['text']
-          console.log('TEXT: ' + $scope.text)
-        });
-    }]);
+
 
 
 
@@ -205,6 +200,77 @@ great directives or AngularJS tips please leave them below in the comments.
         }
       }
     ]);
+
+    /*
+    REFERENCE: https://github.com/gsklee/ngStorage
+
+    For example, URL’s like /route/12345?a=2&b=3 will match the route /route
+    with id 12345 and query string variables a & b. Now those values can
+    be accessed in controller code using $routeParams service. Any parameter
+    [preceded by ':'] in route can be accessed in controller by it’s name
+    using $routeParams.paramName. Additionally, any query string passed
+    in URL can be accessed in controller using $routeParams.variableName
+    */
+    noteshareApp.controller('documentsController', [
+      '$scope',
+      '$localStorage',
+      '$routeParams',
+      '$http',
+
+      function($scope, $localStorage, $routeParams, $http) {
+
+        var id;
+        if ($routeParams.id != undefined) {
+          id = $routeParams.id
+        } else {
+          id = $localStorage.currentDocumentID;
+        }
+
+        console.log('Document id: ' + id)
+        $scope.title = $localStorage.title
+        $scope.text = $localStorage.text
+        /* $scope.documents = [{'title': 'Foo'}, {'title': 'Bar'}] */
+        var docArray = $localStorage.documents
+        $scope.docArray = docArray
+        $http.get('http://localhost:2300/v1/documents/' + id  )
+        .then(function(response){
+          $scope.text = response.data['document']['text']
+          $scope.title = response.data['document']['title']
+          $localStorage.currentDocumentID = response.data['document']['id']
+          $localStorage.title = $scope.title
+          $localStorage.text = $scope.text
+          console.log('TEXT: ' + $scope.text)
+        });
+    }]);
+
+    noteshareApp.controller('editDocumentController', [
+      '$scope',
+      '$localStorage',
+      '$routeParams',
+      '$http',
+      function($scope, $localStorage, $routeParams, $http) {
+        var id;
+        console.log('EDIT CONTROLLER, $routeParams.id: ' + $routeParams.id)
+        if ($routeParams.id != undefined) {
+          id = $routeParams.id
+        } else {
+          id = $localStorage.currentDocumentID;
+        }
+        console.log('Document id: ' + id)
+        $scope.title = $localStorage.title
+        $scope.text = $localStorage.text
+        $scope.editText = $localStorage.text
+        /* $scope.documents = [{'title': 'Foo'}, {'title': 'Bar'}] */
+        var docArray = $localStorage.documents
+        $scope.docArray = docArray
+        $http.get('http://localhost:2300/v1/documents/' + id  )
+        .then(function(response){
+          $scope.title = response.data['document']['title']
+          $scope.text = response.data['document']['text']
+          console.log('TEXT: ' + $scope.text)
+        });
+    }]);
+
 /**
     noteshareApp.controller('documentController', function($scope, $http) {
       $http.get('http://localhost:2300/documents/12')
