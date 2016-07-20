@@ -50,6 +50,11 @@ great directives or AngularJS tips please leave them below in the comments.
                 controller  : 'documentsController'
             })
 
+            .when('/documents/:id', {
+                templateUrl : 'pages/documents.html',
+                controller  : 'documentsController'
+            })
+
             .when('/newdocument', {
                 templateUrl : 'pages/newdocument.html',
                 controller  : 'newDocumentController'
@@ -94,14 +99,19 @@ great directives or AngularJS tips please leave them below in the comments.
     noteshareApp.controller('documentsController', [
       '$scope',
       '$localStorage',
-      function($scope, $localStorage) {
+      '$routeParams',
+      '$http',
+      function($scope, $localStorage, $routeParams, $http) {
+        var id = $routeParams.id
+        console.log('Document id: ' + id)
         /* $scope.documents = [{'title': 'Foo'}, {'title': 'Bar'}] */
         var docArray = $localStorage.documents
         $scope.docArray = docArray
-        var f = function(item){ return item['title'] }
-        var titles = docArray.map(f);
-        console.log('titles: ' + titles)
-        $scope.titles = titles
+        $http.get('http://localhost:2300/v1/documents/' + id  )
+        .then(function(response){
+          $scope.text = response.data['document']['text']
+          console.log('TEXT: ' + $scope.text)
+        });
     }]);
 
 
