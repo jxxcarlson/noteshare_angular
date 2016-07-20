@@ -1,7 +1,5 @@
 <!-- documents.html -->
     <div style="width:50%; min-width:300px;margin-left:auto; margin-right:auto;">
         <h1>Documents</h1>
-
-        <p ng-repeat="title in titles">{{title}}</p>
-
+        <p ng-repeat="doc in docArray"><a href="#{{doc['url']}}">{{doc['title']}}</a></p>
     </div>

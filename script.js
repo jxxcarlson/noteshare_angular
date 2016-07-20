@@ -66,6 +66,7 @@ great directives or AngularJS tips please leave them below in the comments.
 
     });
 
+    /* REFERENCE: https://github.com/gsklee/ngStorage */
     noteshareApp.controller('searchController', [
       '$scope',
       '$http',
@@ -89,12 +90,14 @@ great directives or AngularJS tips please leave them below in the comments.
         $scope.message = 'Look! I am an about page.';
     });
 
+    /* REFERENCE: https://github.com/gsklee/ngStorage */
     noteshareApp.controller('documentsController', [
       '$scope',
       '$localStorage',
       function($scope, $localStorage) {
         /* $scope.documents = [{'title': 'Foo'}, {'title': 'Bar'}] */
         var docArray = $localStorage.documents
+        $scope.docArray = docArray
         var f = function(item){ return item['title'] }
         var titles = docArray.map(f);
         console.log('titles: ' + titles)
