@@ -2,7 +2,7 @@
 
     // create the module and name it noteshareApp
         // also include ngRoute for all our routing needs
-    var noteshareApp = angular.module('noteshareApp', ['ngRoute']);
+    var noteshareApp = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
 
     /*
 This directive allows us to pass a function in on an enter key to do what we want.
@@ -66,20 +66,19 @@ great directives or AngularJS tips please leave them below in the comments.
 
     });
 
-
-
-
     noteshareApp.controller('searchController', [
       '$scope',
       '$http',
-      function($scope, $http) {
+      '$localStorage',
+      function($scope, $http, $localStorage) {
       $scope.doSearch = function(){
             console.log('Search text: ' + $scope.searchText);
-
             $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
             .then(function(response){
-              console.log(String(response.data))
-              /* $scope.text = response.data['document']['text'] */
+              console.log(response.data['status'])
+              var jsonData = response.data
+              var documents = jsonData['documents']
+              $localStorage.documents = documents
             });
 
       };
@@ -90,13 +89,17 @@ great directives or AngularJS tips please leave them below in the comments.
         $scope.message = 'Look! I am an about page.';
     });
 
-    noteshareApp.controller('documentsController', function($scope, $http) {
-      $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
-      .then(function(response){
-        console.log(String(response.data))
-        /* $scope.text = response.data['document']['text'] */
-      });
-    });
+    noteshareApp.controller('documentsController', [
+      '$scope',
+      '$localStorage',
+      function($scope, $localStorage) {
+        /* $scope.documents = [{'title': 'Foo'}, {'title': 'Bar'}] */
+        var docArray = $localStorage.documents
+        var f = function(item){ return item['title'] }
+        var titles = docArray.map(f);
+        console.log('titles: ' + titles)
+        $scope.titles = titles
+    }]);
 
 
 
