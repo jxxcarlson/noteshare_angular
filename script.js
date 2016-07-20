@@ -108,21 +108,11 @@ great directives or AngularJS tips please leave them below in the comments.
     });
 
 
-
-
-
-
-
-// If you use
-// $window.localStorage.setItem(key,value) to store,
-// $window.localStorage.getItem(key) to retrieve and
-// $window.localStorage.removeItem(key)
-// then you can access the values in any page.
     noteshareApp.controller('signinController', [
       '$scope',
       '$http',
-      '$window',
-      function($scope, $http, $window) {
+      '$localStorage',
+      function($scope, $http, $localStorage) {
         $scope.submit = function() {
           console.log('Submit username = ' + $scope.username + ', password = ' + $scope.password);
 
@@ -130,15 +120,13 @@ great directives or AngularJS tips please leave them below in the comments.
           .then(function(response){
             if (response.data['status'] == 200) {
               $scope.message = 'Success!'
-              $window.localStorage.setItem('access_token',response.data['token'])
+              $localStorage.access_token = response.data['token']
             } else {
               $scope.message = 'Sorry!'
             }
             console.log(String(response.data['token']))
             $scope.text = $scope.token
           });
-
-
         }
       }
     ]);
@@ -147,8 +135,8 @@ great directives or AngularJS tips please leave them below in the comments.
     noteshareApp.controller('signupController', [
       '$scope',
       '$http',
-      '$window',
-      function($scope, $http, $window) {
+      '$localStorage',
+      function($scope, $http, $localStorage) {
         $scope.submit = function() {
           var parameter = JSON.stringify({username:$scope.username, email:$scope.email, password: $scope.password, password_confirmation: $scope.passwordConfirmation});
           console.log(parameter);
@@ -157,7 +145,7 @@ great directives or AngularJS tips please leave them below in the comments.
           .then(function(response){
             if (response.data['status'] == 200) {
               $scope.message = 'Success!'
-              $window.localStorage.setItem('access_token',response.data['token'])
+              $localStorage.access_token = response.data['token']
             } else {
               $scope.message = response.data['error']
             }
@@ -173,14 +161,14 @@ great directives or AngularJS tips please leave them below in the comments.
     noteshareApp.controller('newDocumentController', [
       '$scope',
       '$http',
-      '$window',
-      function($scope, $http, $window) {
+      '$localStorage',
+      function($scope, $http, $localStorage) {
         $scope.submit = function() {
 
           console.log('CREATE DOCUMENT')
           console.log("create new document: " + $scope.title)
 
-          var access_token = $window.localStorage.getItem('access_token')
+          var access_token = $localStorage.access_token
           console.log("TOKEN: " + String(access_token))
 
           var parameter = JSON.stringify({title:$scope.title, token:access_token });
@@ -244,32 +232,54 @@ great directives or AngularJS tips please leave them below in the comments.
     }]);
 
     noteshareApp.controller('editDocumentController', [
-      '$scope',
-      '$localStorage',
-      '$routeParams',
-      '$http',
-      function($scope, $localStorage, $routeParams, $http) {
+    '$scope',
+    '$localStorage',
+    '$routeParams',
+    '$http',
+    function($scope, $localStorage, $routeParams, $http) {
+
         var id;
         console.log('EDIT CONTROLLER, $routeParams.id: ' + $routeParams.id)
         if ($routeParams.id != undefined) {
-          id = $routeParams.id
+            id = $routeParams.id
         } else {
-          id = $localStorage.currentDocumentID;
+            id = $localStorage.currentDocumentID;
         }
-        console.log('Document id: ' + id)
+        /* Initial values: */
         $scope.title = $localStorage.title
         $scope.text = $localStorage.text
         $scope.editText = $localStorage.text
-        /* $scope.documents = [{'title': 'Foo'}, {'title': 'Bar'}] */
-        var docArray = $localStorage.documents
-        $scope.docArray = docArray
+        $scope.docArray = $localStorage.documents
+
+        /* Get most recent version from server */
         $http.get('http://localhost:2300/v1/documents/' + id  )
-        .then(function(response){
-          $scope.title = response.data['document']['title']
-          $scope.text = response.data['document']['text']
-          console.log('TEXT: ' + $scope.text)
-        });
-    }]);
+            .then(function(response){
+                $scope.title = response.data['document']['title']
+                $scope.text = response.data['document']['text']
+                console.log('TEXT: ' + $scope.text)
+            })
+
+        /* updateDocument */
+        $scope.updateDocument = function() {
+            console.log('Update document ' + id + ', text = ' + $scope.editText)
+
+            var parameter = JSON.stringify({id:id, text:$scope.editText, token: $localStorage.access_token });
+
+            console.log('parameter:' + parameter);
+
+            $http.post('http://localhost:2300/v1/documents/' + id, parameter)
+                .then(function(response){
+                    if (response.data['status'] == 200) {
+                        $scope.message = 'Success!'
+                    } else {
+                        $scope.message = response.data['error']
+                    }
+                    console.log('status = ' + String(response.data['status']))
+
+                })
+        }
+
+}]);
 
 /**
     noteshareApp.controller('documentController', function($scope, $http) {
