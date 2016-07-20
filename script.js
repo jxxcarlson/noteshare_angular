@@ -69,11 +69,21 @@ great directives or AngularJS tips please leave them below in the comments.
 
 
 
-    noteshareApp.controller('searchController', function($scope) {
+    noteshareApp.controller('searchController', [
+      '$scope',
+      '$http',
+      function($scope, $http) {
       $scope.doSearch = function(){
             console.log('Search text: ' + $scope.searchText);
+
+            $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
+            .then(function(response){
+              console.log(String(response.data))
+              /* $scope.text = response.data['document']['text'] */
+            });
+
       };
-    });
+    }]);
 
 
     noteshareApp.controller('aboutController', function($scope) {
@@ -81,12 +91,14 @@ great directives or AngularJS tips please leave them below in the comments.
     });
 
     noteshareApp.controller('documentsController', function($scope, $http) {
-      $http.get('http://localhost:2300/v1/documents/1')
+      $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
       .then(function(response){
         console.log(String(response.data))
-        $scope.text = response.data['document']['text']
+        /* $scope.text = response.data['document']['text'] */
       });
     });
+
+
 
 
 
