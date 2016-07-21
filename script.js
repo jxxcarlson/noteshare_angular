@@ -27,6 +27,20 @@ great directives or AngularJS tips please leave them below in the comments.
     };
 });
 
+ angular.module('noteshareApp').directive( 'elemReady', function( $parse ) {
+   return {
+       restrict: 'A',
+       link: function( $scope, elem, attrs ) {
+          elem.ready(function(){
+            $scope.$apply(function(){
+                var func = $parse(attrs.elemReady);
+                func($scope);
+            })
+          })
+       }
+    }
+})
+
 
     // configure our routes
     noteshareApp.config(function($routeProvider) {
@@ -89,7 +103,7 @@ great directives or AngularJS tips please leave them below in the comments.
       '$http',
       '$localStorage',
       function($scope, $http, $localStorage) {
-      $scope.doSearch = function(){
+        $scope.doSearch = function(){
             console.log('Search text: ' + $scope.searchText);
             $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
             .then(function(response){
@@ -204,30 +218,38 @@ great directives or AngularJS tips please leave them below in the comments.
       '$localStorage',
       '$routeParams',
       '$http',
+      '$sce',
 
-      function($scope, $localStorage, $routeParams, $http) {
+      function($scope, $localStorage, $routeParams, $http, $sce ) {
 
         var id;
         if ($routeParams.id != undefined) {
-          id = $routeParams.id
+            id = $routeParams.id
         } else {
-          id = $localStorage.currentDocumentID;
+            id = $localStorage.currentDocumentID;
         }
+        /* Initial values: */
+        /* $scope.editableTitle =  = $localStorage.title */
+        $scope.text = $localStorage.text
+        $scope.renderedText = function() { return $sce.trustAsHtml($localStorage.rendered_text); }
+        $scope.docArray = $localStorage.documents
+
+        $scope.reloadMathJax = function () { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("reloadMathJax called"); }
 
         console.log('Document id: ' + id)
-        $scope.title = $localStorage.title
-        $scope.text = $localStorage.text
-        /* $scope.documents = [{'title': 'Foo'}, {'title': 'Bar'}] */
-        var docArray = $localStorage.documents
-        $scope.docArray = docArray
+
         $http.get('http://localhost:2300/v1/documents/' + id  )
         .then(function(response){
-          $scope.text = response.data['document']['text']
-          $scope.title = response.data['document']['title']
-          $localStorage.currentDocumentID = response.data['document']['id']
+          var document = response.data['document']
+          $scope.title = document['title']
+          $scope.text = document['text']
+          $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
+
+          $localStorage.currentDocumentID = document['id']
           $localStorage.title = $scope.title
           $localStorage.text = $scope.text
-          console.log('TEXT: ' + $scope.text)
+          $localStorage.renderedText = document['rendered_text']
+
         });
     }]);
 
@@ -246,6 +268,8 @@ great directives or AngularJS tips please leave them below in the comments.
         } else {
             id = $localStorage.currentDocumentID;
         }
+
+        $scope.reloadMathJax = function () { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("reloadMathJax called"); }
         /* Initial values: */
         $scope.title = $localStorage.title
         $scope.text = $localStorage.text
@@ -282,14 +306,18 @@ great directives or AngularJS tips please leave them below in the comments.
                     var rt;
                     if (response.data['status'] == '202') {
                         var document = response.data['document']
+
+                        /* Update local storage */
                         $localStorage.currentDocumentID = document['id']
                         $localStorage.rendered_text = document['rendered_text']
                         $localStorage.title = document['title']
-                        $scop.title = document['title']
-                        $scope.renderedText = function() { return $sce.trustAsHtml(rt); }
+
+                        /* Update $scope */
+                        $scope.title = document['title']
+                        $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
                         $scope.message = 'Success!'
+
                     } else {
-                        rt = 'Error!'
                         $scope.message = response.data['error']
                     }
 
