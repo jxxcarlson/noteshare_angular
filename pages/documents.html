@@ -11,7 +11,10 @@
   <div class="col-md-8">
     <div style="margin-left:1em;">
     <h2> {{ title }} </h2>
-    <div ng-bind-html="renderedText()" elem-ready="reloadMathJax()"></div>
+    <div class="container fill">
+      <div ng-bind-html="renderedText()" elem-ready="reloadMathJax()" id="rendered_text"></div>
+    </div>
+
 
   </div>
 </div>

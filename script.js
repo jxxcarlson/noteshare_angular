@@ -108,6 +108,7 @@ great directives or AngularJS tips please leave them below in the comments.
             $http.get('http://localhost:2300/v1/documents' + '?' + $scope.searchText  )
             .then(function(response){
               console.log(response.data['status'])
+              console.log('Number of documents: ' + response.data['document_count'])
               var jsonData = response.data
               var documents = jsonData['documents']
               $localStorage.documents = documents
@@ -330,11 +331,7 @@ great directives or AngularJS tips please leave them below in the comments.
 
 }]);
 
-/**
-    noteshareApp.controller('documentController', function($scope, $http) {
-      $http.get('http://localhost:2300/documents/12')
-      .then(function(response){
-        $scope.text = response.data
-      });
-    });
-*/
+noteshareApp.controller('DocumentTypeController', function ($scope) {
+
+    $scope.documentTypes = ['text', 'asciidoc', 'asciidoc-manuscript', 'asciiodoc-latex', 'pdf'];
+});
