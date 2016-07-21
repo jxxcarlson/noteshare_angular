@@ -1,22 +1,29 @@
 <div class="row">
-  <div class="col-md-4" >
+
+  <div class="col-md-2" >
+      <div style="margin-left:1em;">
+
+          <h3>Documents</h3>
+          <p ng-repeat="doc in docArray"><a href="#/editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
+
+        </div>
+  </div>
+
+  <div class="col-md-4">
+      <div style="margin-left:1em;">
+        <h3>{{ title }}</h3>
+        <button ng-click="updateDocument()">Save</button></p>
+        <textarea ng-model="editText" rows="30" style="width:90%;"></textarea>
+      </div>
+  </div>
+
+  <div class="col-md-4">
     <div style="margin-left:1em;">
-
-    <h2>Documents (edit)</h2>
-    <p ng-repeat="doc in docArray"><a href="#/editdocument/{{doc['id']}}">{{doc['title']}}</a></p>
-
-  </div>
+      <h3>{{ title }}</h3>
+      <div style="width:90%;" ng-bind-html="renderedText()"></div>
   </div>
 
-  <div class="col-md-8">
-    <div style="margin-left:1em;">
-    <h2>{{ title }}</h2>
 
-   <button ng-click="updateDocument()">Save</button></p>
-
-
-   <textarea ng-model="editText" style="height:90%"></textarea>
-  </div>
 </div>
 
 </div>

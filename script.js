@@ -236,7 +236,8 @@ great directives or AngularJS tips please leave them below in the comments.
     '$localStorage',
     '$routeParams',
     '$http',
-    function($scope, $localStorage, $routeParams, $http) {
+    '$sce',
+    function($scope, $localStorage, $routeParams, $http, $sce) {
 
         var id;
         console.log('EDIT CONTROLLER, $routeParams.id: ' + $routeParams.id)
@@ -249,14 +250,23 @@ great directives or AngularJS tips please leave them below in the comments.
         $scope.title = $localStorage.title
         $scope.text = $localStorage.text
         $scope.editText = $localStorage.text
+        $scope.renderedText = function() { return $sce.trustAsHtml($localStorage.rendered_text); }
         $scope.docArray = $localStorage.documents
 
         /* Get most recent version from server */
         $http.get('http://localhost:2300/v1/documents/' + id  )
             .then(function(response){
-                $scope.title = response.data['document']['title']
-                $scope.text = response.data['document']['text']
-                console.log('TEXT: ' + $scope.text)
+                var document = response.data['document']
+                $scope.title = document['title']
+                $scope.editText = document['text']
+                $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
+
+                /* Update local storage */
+                $localStorage.currentDocumentID = document['id']
+                $localStorage.title = document['title']
+                console.log('I set $localStorage.title to ' + $localStorage.title)
+                $localStorage.text = document['text']
+                $localStorage.renderedText = document['rendered_text']
             })
 
         /* updateDocument */
@@ -269,11 +279,20 @@ great directives or AngularJS tips please leave them below in the comments.
 
             $http.post('http://localhost:2300/v1/documents/' + id, parameter)
                 .then(function(response){
-                    if (response.data['status'] == 200) {
+                    var rt;
+                    if (response.data['status'] == '202') {
+                        var document = response.data['document']
+                        $localStorage.currentDocumentID = document['id']
+                        $localStorage.rendered_text = document['rendered_text']
+                        $localStorage.title = document['title']
+                        $scop.title = document['title']
+                        $scope.renderedText = function() { return $sce.trustAsHtml(rt); }
                         $scope.message = 'Success!'
                     } else {
+                        rt = 'Error!'
                         $scope.message = response.data['error']
                     }
+
                     console.log('status = ' + String(response.data['status']))
 
                 })
