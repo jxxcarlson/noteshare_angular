@@ -229,7 +229,6 @@ great directives or AngularJS tips please leave them below in the comments.
             id = $localStorage.currentDocumentID;
         }
         /* Initial values: */
-        /* $scope.editableTitle =  = $localStorage.title */
         $scope.text = $localStorage.text
         $scope.renderedText = function() { return $sce.trustAsHtml($localStorage.rendered_text); }
         $scope.docArray = $localStorage.documents
@@ -269,9 +268,11 @@ great directives or AngularJS tips please leave them below in the comments.
             id = $localStorage.currentDocumentID;
         }
 
+
         $scope.reloadMathJax = function () { MathJax.Hub.Queue(["Typeset", MathJax.Hub]); console.log("reloadMathJax called"); }
         /* Initial values: */
         $scope.title = $localStorage.title
+        $scope.editableTitle = $scope.title
         $scope.text = $localStorage.text
         $scope.editText = $localStorage.text
         $scope.renderedText = function() { return $sce.trustAsHtml($localStorage.rendered_text); }
@@ -282,6 +283,7 @@ great directives or AngularJS tips please leave them below in the comments.
             .then(function(response){
                 var document = response.data['document']
                 $scope.title = document['title']
+                $scope.editableTitle = $scope.title
                 $scope.editText = document['text']
                 $scope.renderedText = function() { return $sce.trustAsHtml(document['rendered_text']); }
 
@@ -297,7 +299,7 @@ great directives or AngularJS tips please leave them below in the comments.
         $scope.updateDocument = function() {
             console.log('Update document ' + id + ', text = ' + $scope.editText)
 
-            var parameter = JSON.stringify({id:id, text:$scope.editText, token: $localStorage.access_token });
+            var parameter = JSON.stringify({id:id, title: $scope.editableTitle, text:$scope.editText, token: $localStorage.access_token });
 
             console.log('parameter:' + parameter);
 
