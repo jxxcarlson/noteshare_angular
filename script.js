@@ -162,7 +162,7 @@ great directives or AngularJS tips please leave them below in the comments.
     });
 
 
-    noteshareApp.controller('signinController',
+    noteshareApp.controller('SigninController',
 
       function($scope, $localStorage, UserApiService) {
 
