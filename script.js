@@ -11,27 +11,26 @@
           return $http.get('http://localhost:2300/v1/users/' + username + '?' + password)
         }
 
-
       });
 
-      noteshareApp.service('UserService', function($http, $localStorage, UserApiService) {
+    noteshareApp.service('UserService', function($http, $localStorage, UserApiService) {
+
+        /* http://stackoverflow.com/questions/22898927/injecting-scope-into-an-angular-service-function */
 
           this.login = function(username, password) {
             UserApiService.login(username, password).success(function(data) {
               if (data['status'] == '200') {
                 console.log('Success!')
-                /* $scope.message = 'Success!' */
                 $localStorage.access_token = data['token']
 
               } else {
                 console.log('Sorry!')
                 $localStorage.access_token = ''
-                
-                /* $scope.message = 'Sorry!' */
               }
             })
-          }
-        });
+          } /* END this.login */
+
+        }); /* END UserService */
 
 
     noteshareApp.service('foo', function() {
@@ -42,7 +41,7 @@
         }
     });
 
-/*
+    /*
     noteshareApp.factory("UserService", function() {
       var users = ["Peter", "Daniel", "Nina"];
 
@@ -58,7 +57,8 @@
       };
     });
 
-*/
+    */
+
 
     /*
 This directive allows us to pass a function in on an enter key to do what we want.
@@ -184,10 +184,11 @@ great directives or AngularJS tips please leave them below in the comments.
     noteshareApp.controller('SigninController',
 
       function($scope, $localStorage, UserService) {
-
+        $scope.message = ''
         $scope.submit = function() {
           UserService.login($scope.username, $scope.password)
         }
+        $scope.message = UserService.message
       }
     );
 
