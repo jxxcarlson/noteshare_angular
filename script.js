@@ -14,6 +14,25 @@
 
       });
 
+      noteshareApp.service('UserService', function($http, $localStorage, UserApiService) {
+
+          this.login = function(username, password) {
+            UserApiService.login(username, password).success(function(data) {
+              if (data['status'] == '200') {
+                console.log('Success!')
+                /* $scope.message = 'Success!' */
+                $localStorage.access_token = data['token']
+
+              } else {
+                console.log('Sorry!')
+                $localStorage.access_token = ''
+                
+                /* $scope.message = 'Sorry!' */
+              }
+            })
+          }
+        });
+
 
     noteshareApp.service('foo', function() {
         this.myFunc = function (x) {
@@ -164,17 +183,10 @@ great directives or AngularJS tips please leave them below in the comments.
 
     noteshareApp.controller('SigninController',
 
-      function($scope, $localStorage, UserApiService) {
+      function($scope, $localStorage, UserService) {
 
         $scope.submit = function() {
-          UserApiService.login($scope.username, $scope.password).success(function(data) {
-            if (data['status'] == '200') {
-              $scope.message = 'Success!'
-              $localStorage.access_token = data['token']
-            } else {
-              $scope.message = 'Sorry!'
-            }
-          }) /* User Service */
+          UserService.login($scope.username, $scope.password)
         }
       }
     );
