@@ -12,6 +12,22 @@
         }
     });
 
+    noteshareApp.factory("UserService", function() {
+      var users = ["Peter", "Daniel", "Nina"];
+
+      return {
+        all: function() {
+          console.log('Users: ' + users)
+          return users;
+        },
+        first: function() {
+          console.log('First user: ' + users[0])
+          return users[0];
+        }
+      };
+    });
+
+
 
     /*
 This directive allows us to pass a function in on an enter key to do what we want.
@@ -127,9 +143,10 @@ great directives or AngularJS tips please leave them below in the comments.
     }]);
 
 
-    noteshareApp.controller('aboutController', function($scope, foo) {
+    noteshareApp.controller('aboutController', function($scope, foo, UserService) {
         $scope.message = 'Look! I am an about page ....';
         foo.myFunc('aboutController')
+        UserService.all()
     });
 
 
