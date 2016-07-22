@@ -102,8 +102,8 @@ great directives or AngularJS tips please leave them below in the comments.
     });
 
     // create the controller and inject Angular's $scope
-    noteshareApp.controller('mainController', function($scope, $http) {
-
+    noteshareApp.controller('mainController', function($scope, $http, foo) {
+      foo.myFunc('mainController')
     });
 
     /* REFERENCE: https://github.com/gsklee/ngStorage */
