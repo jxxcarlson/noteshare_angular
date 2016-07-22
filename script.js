@@ -4,6 +4,23 @@
         // also include ngRoute for all our routing needs
     var noteshareApp = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
 
+
+    noteshareApp.service('UserService', function($http) {
+
+        this.login = function(username, password) {
+          console.log('UserService, username = ' + username + ', password = ' + password);
+
+          $http.get('http://localhost:2300/v1/users/' + username + '?' + password)
+          .then(function(response){
+            val = response.data['token']
+            console.log('VAL: ' + val)
+
+            return val;
+          })
+        }
+      });
+
+
     noteshareApp.service('foo', function() {
         this.myFunc = function (x) {
             val = 'foobar: ' + x;
@@ -12,6 +29,7 @@
         }
     });
 
+/*
     noteshareApp.factory("UserService", function() {
       var users = ["Peter", "Daniel", "Nina"];
 
@@ -27,7 +45,7 @@
       };
     });
 
-
+*/
 
     /*
 This directive allows us to pass a function in on an enter key to do what we want.
@@ -143,36 +161,25 @@ great directives or AngularJS tips please leave them below in the comments.
     }]);
 
 
-    noteshareApp.controller('aboutController', function($scope, foo, UserService) {
+    noteshareApp.controller('aboutController', function($scope, foo) {
         $scope.message = 'Look! I am an about page ....';
         foo.myFunc('aboutController')
-        UserService.all()
+
     });
 
 
-    noteshareApp.controller('signinController', [
-      '$scope',
-      '$http',
-      '$localStorage',
-      function($scope, $http, $localStorage) {
+    noteshareApp.controller('signinController',
+
+      function($scope, foo, UserService) {
 
         $scope.submit = function() {
           console.log('Submit username = ' + $scope.username + ', password = ' + $scope.password);
+          foo.myFunc('signinController')
+          UserService.login($scope.username, $scope.password)
 
-          $http.get('http://localhost:2300/v1/users/' + $scope.username + '?' + $scope.password)
-          .then(function(response){
-            if (response.data['status'] == 200) {
-              $scope.message = 'Success!'
-              $localStorage.access_token = response.data['token']
-            } else {
-              $scope.message = 'Sorry!'
-            }
-            console.log(String(response.data['token']))
-            $scope.text = $scope.token
-          });
         }
       }
-    ]);
+    );
 
 
     noteshareApp.controller('signupController', [
