@@ -4,6 +4,15 @@
         // also include ngRoute for all our routing needs
     var noteshareApp = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
 
+    noteshareApp.service('foo', function() {
+        this.myFunc = function (x) {
+            val = 'foobar: ' + x;
+            console.log(val)
+            return val;
+        }
+    });
+
+
     /*
 This directive allows us to pass a function in on an enter key to do what we want.
 http://fiddle.jshell.net/lsconyer/bktpzgre/1/light/
@@ -118,8 +127,9 @@ great directives or AngularJS tips please leave them below in the comments.
     }]);
 
 
-    noteshareApp.controller('aboutController', function($scope) {
-        $scope.message = 'Look! I am an about page.';
+    noteshareApp.controller('aboutController', function($scope, foo) {
+        $scope.message = 'Look! I am an about page ....';
+        foo.myFunc('aboutController')
     });
 
 
@@ -128,6 +138,7 @@ great directives or AngularJS tips please leave them below in the comments.
       '$http',
       '$localStorage',
       function($scope, $http, $localStorage) {
+
         $scope.submit = function() {
           console.log('Submit username = ' + $scope.username + ', password = ' + $scope.password);
 
