@@ -5,19 +5,13 @@
     var noteshareApp = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
 
 
-    noteshareApp.service('UserService', function($http) {
+    noteshareApp.service('UserApiService', function($http) {
 
         this.login = function(username, password) {
-          console.log('UserService, username = ' + username + ', password = ' + password);
-
-          $http.get('http://localhost:2300/v1/users/' + username + '?' + password)
-          .then(function(response){
-            val = response.data['token']
-            console.log('VAL: ' + val)
-
-            return val;
-          })
+          return $http.get('http://localhost:2300/v1/users/' + username + '?' + password)
         }
+
+
       });
 
 
@@ -170,13 +164,17 @@ great directives or AngularJS tips please leave them below in the comments.
 
     noteshareApp.controller('signinController',
 
-      function($scope, foo, UserService) {
+      function($scope, $localStorage, UserApiService) {
 
         $scope.submit = function() {
-          console.log('Submit username = ' + $scope.username + ', password = ' + $scope.password);
-          foo.myFunc('signinController')
-          UserService.login($scope.username, $scope.password)
-
+          UserApiService.login($scope.username, $scope.password).success(function(data) {
+            if (data['status'] == '200') {
+              $scope.message = 'Success!'
+              $localStorage.access_token = data['token']
+            } else {
+              $scope.message = 'Sorry!'
+            }
+          }) /* User Service */
         }
       }
     );
