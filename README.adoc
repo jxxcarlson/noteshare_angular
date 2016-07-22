@@ -1,1 +1,3 @@
 Notehsare angular client
+
+git co b2f9c02d9fd2646d28740a71ef4c93c3a5845fef
