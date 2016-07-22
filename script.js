@@ -58,7 +58,7 @@ great directives or AngularJS tips please leave them below in the comments.
             // route for the home page
             .when('/', {
                 templateUrl : 'pages/home.html',
-                controller  : 'mainController'
+                controller  : 'MainController'
             })
 
             // route for the about page
@@ -102,8 +102,8 @@ great directives or AngularJS tips please leave them below in the comments.
     });
 
     // create the controller and inject Angular's $scope
-    noteshareApp.controller('mainController', function($scope, $http, foo) {
-      foo.myFunc('mainController')
+    noteshareApp.controller('MainController', function($scope, $http, foo) {
+      foo.myFunc('MainController')
     });
 
     /* REFERENCE: https://github.com/gsklee/ngStorage */
