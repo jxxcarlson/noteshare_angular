@@ -17,7 +17,8 @@ module.exports = function(config) {
     files: [
       'js/angular/angular.min.js',
       'js/**/*.js',
-      'test/**/*.karma.js'
+      'test/**/*.karma.js',
+      'test/html/*.html'
     ],
 
 
