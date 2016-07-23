@@ -5,58 +5,6 @@
     var noteshareApp = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
 
 
-    noteshareApp.service('UserState', function() {
-
-      this.userData = {count: 0};
-
-      this.increment = function() {
-        console.log('-- count: ' + this.userData.count)
-        this.userData.count = this.userData.count + 1
-      }
-
-      this.getCount = function() {
-        return this.userData.count
-      }
-
-      this.user = function() {
-            return this.userData;
-      };
-
-      this.setMessage = function(msg) {
-            this.userData.message = msg;
-      };
-
-      this.getMessage = function() {
-            return this.userData.message;
-      };
-
-      this.setStatus = function(status) {
-            this.userData.status = status;
-      };
-
-      this.getStatus = function() {
-        console.log('status: ' + this.userData.status)
-        return this.userData.status;
-      };
-
-      this.setAccessToken = function(accessToken) {
-            this.userData.accessToken = accessToken;
-      };
-
-      this.getAccessToken = function() {
-            return this.userData.accessToken;
-      };
-
-      this.setCount = function(count) {
-            this.userData.count = count;
-      };
-
-      this.getCount = function() {
-            return this.userData.count;
-      };
-    });
-
-
     noteshareApp.service('UserApiService', function($http) {
 
         this.login = function(username, password) {
@@ -90,24 +38,7 @@
         }
     });
 
-    /*
-    noteshareApp.factory("UserService", function() {
-      var users = ["Peter", "Daniel", "Nina"];
-
-      return {
-        all: function() {
-          console.log('Users: ' + users)
-          return users;
-        },
-        first: function() {
-          console.log('First user: ' + users[0])
-          return users[0];
-        }
-      };
-    });
-
-    */
-
+  
 
     /*
 This directive allows us to pass a function in on an enter key to do what we want.
@@ -235,11 +166,13 @@ great directives or AngularJS tips please leave them below in the comments.
       function($scope, $localStorage, UserService) {
         $scope.submit = function() {
           UserService.login($scope.username, $scope.password)
-          if (UserService.loginStatus() == 200) {
-            $scope.message = 'Success!'
-          } else {
-            $scope.message = 'Sorry'
-          }  
+
+            if (UserService.loginStatus() == 200) {
+              $scope.message = 'Success!'
+            } else {
+              $scope.message = 'Sorry'
+            }
+
         }
       }
     );
