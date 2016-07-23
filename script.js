@@ -5,38 +5,41 @@
     var noteshareApp = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
 
 
+    /*
+       REFERENCES (PROMISES)
+       http://wildermuth.com/2013/8/3/JavaScript_Promises
+       http://liamkaufman.com/blog/2013/09/09/using-angularjs-promises/
+       https://docs.angularjs.org/api/ng/service/$q
+    */
 
-    noteshareApp.service('UserApiService', function($http) {
+    noteshareApp.service('UserApiService', function($http, $q, $localStorage) {
+
+      var deferred = $q.defer();
 
         this.login = function(username, password) {
           return $http.get('http://localhost:2300/v1/users/' + username + '?' + password)
+          .then(function (response) {
+                // promise is fulfilled
+
+                deferred.resolve(response.data);
+
+                var data = response.data
+                console.log('I updated localStorage with status ' + data['status'] + ' and token ' + data['token'])
+                $localStorage.accessToken = data['token']
+                $localStorage.loginStatus = data['status']
+
+                // promise is returned
+                return deferred.promise;
+            }, function (response) {
+                // the following line rejects the promise
+                deferred.reject(response);
+                // promise is returned
+                return deferred.promise;
+            })
+        ;
         }
 
       });
-
-      /*
-         REFERENCES (PROMISES)
-         http://wildermuth.com/2013/8/3/JavaScript_Promises
-         http://liamkaufman.com/blog/2013/09/09/using-angularjs-promises/
-         https://docs.angularjs.org/api/ng/service/$q
-      */
-    noteshareApp.service('UserService', function($http, $localStorage, UserApiService) {
-
-        /* http://stackoverflow.com/questions/22898927/injecting-scope-into-an-angular-service-function */
-
-          this.login = function(username, password) {
-            UserApiService.login(username, password)
-            .success(function(data) {
-              $localStorage.accessToken = data['token']
-              $localStorage.loginStatus = data['status']
-            }) /* END .success() */
-          } /* END this.login */
-
-          this.accessToken = function() { return $localStorage.accessToken }
-          this.loginStatus = function() { return $localStorage.loginStatus }
-
-        }); /* END UserService */
-
 
     noteshareApp.service('foo', function() {
         this.myFunc = function (x) {
@@ -171,19 +174,28 @@ great directives or AngularJS tips please leave them below in the comments.
 
     noteshareApp.controller('SigninController',
 
-      function($scope, $localStorage, UserService) {
+      function($scope, $localStorage, UserApiService) {
         $scope.submit = function() {
-          UserService.login($scope.username, $scope.password)
+          UserApiService.login($scope.username, $scope.password)
+          .then(
+                function (result) {
 
-            if (UserService.loginStatus() == 200) {
-              $scope.message = 'Success!'
-            } else {
-              $scope.message = 'Sorry'
-            }
-
+                  if ($localStorage.loginStatus == 200) {
+                    $scope.message = 'Success!'
+                  } else {
+                    $scope.message = 'Sorry'
+                  }
+                    // promise was fullfilled (regardless of outcome)
+                    // checks for information will be peformed here
+                },
+                function (error) {
+                    // handle errors here
+                    // console.log(error.statusText);
+                    console.log('ERROR!');
+                }
+            );
         }
-      }
-    );
+      });
 
 
     noteshareApp.controller('signupController', [
