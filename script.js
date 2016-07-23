@@ -5,12 +5,7 @@
     var noteshareApp = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
 
 
-    /*
-       REFERENCES (PROMISES)
-       http://wildermuth.com/2013/8/3/JavaScript_Promises
-       http://liamkaufman.com/blog/2013/09/09/using-angularjs-promises/
-       https://docs.angularjs.org/api/ng/service/$q
-    */
+
     noteshareApp.service('UserApiService', function($http) {
 
         this.login = function(username, password) {
@@ -19,6 +14,12 @@
 
       });
 
+      /*
+         REFERENCES (PROMISES)
+         http://wildermuth.com/2013/8/3/JavaScript_Promises
+         http://liamkaufman.com/blog/2013/09/09/using-angularjs-promises/
+         https://docs.angularjs.org/api/ng/service/$q
+      */
     noteshareApp.service('UserService', function($http, $localStorage, UserApiService) {
 
         /* http://stackoverflow.com/questions/22898927/injecting-scope-into-an-angular-service-function */
@@ -28,7 +29,7 @@
             .success(function(data) {
               $localStorage.accessToken = data['token']
               $localStorage.loginStatus = data['status']
-            })
+            }) /* END .success() */
           } /* END this.login */
 
           this.accessToken = function() { return $localStorage.accessToken }
