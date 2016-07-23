@@ -5,6 +5,12 @@
     var noteshareApp = angular.module('noteshareApp', ['ngRoute', 'ngStorage']);
 
 
+    /*
+       REFERENCES (PROMISES)
+       http://wildermuth.com/2013/8/3/JavaScript_Promises
+       http://liamkaufman.com/blog/2013/09/09/using-angularjs-promises/
+       https://docs.angularjs.org/api/ng/service/$q
+    */
     noteshareApp.service('UserApiService', function($http) {
 
         this.login = function(username, password) {
@@ -18,7 +24,8 @@
         /* http://stackoverflow.com/questions/22898927/injecting-scope-into-an-angular-service-function */
 
           this.login = function(username, password) {
-            UserApiService.login(username, password).success(function(data) {
+            UserApiService.login(username, password)
+            .success(function(data) {
               $localStorage.accessToken = data['token']
               $localStorage.loginStatus = data['status']
             })
@@ -38,7 +45,7 @@
         }
     });
 
-  
+
 
     /*
 This directive allows us to pass a function in on an enter key to do what we want.
